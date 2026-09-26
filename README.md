@@ -23,6 +23,9 @@ results are in the Evaluation card below. In short: the checker catches far more
 than a classifier trained on older texts, but on those scams Jev does only a little better than
 simple keyword rules answering the same questions -- see "How much does Jev add?".
 
+**Android app: [download the latest version](https://github.com/jonny5isalive5/jev-scam-triage/releases/latest)**
+(open it on your phone, install, paste your TypeSafe key, tap Save key).
+
 ## Use it
 
 ```bash
@@ -189,8 +192,12 @@ MIT -- see `LICENSE`. Dataset licences are listed above.
   deleted or blocked. In the background a warning is raised for a *likely scam*, or for *be careful*
   only when Jev actually judged the text -- "couldn't reach Jev" (no key, offline) never pops up a
   warning, or every text from a non-contact would.
-- Link checks, masking and the gate run on the phone. With a TypeSafe key saved in the app's
-  Settings, masked messages are also sent to Jev; without one, only the basic checks run.
+- Link checks, masking and the gate run on the phone. With a TypeSafe key saved in the app,
+  masked messages are also sent to Jev; without one, only the basic checks run.
+- Background mode applies the gate first, so it differs a little from the paste-in numbers in the
+  evaluation card. Recomputed after the fact from the same logged test run
+  (`results/card_test_live_messages.jsonl`, counting only messages the gate passes): 78.6% of test
+  scams raise a warning (vs 83.2% pasted in), and 2.2% of ordinary texts do (vs 9.0%).
 
 The phone and the Python package share one rules file, `spec/scam_check_spec.json` (written by
 `python -m scam_triage.spec`). The Android unit tests replay every worked example in it and must
@@ -201,4 +208,5 @@ then real SMS messages sent to the emulator -- a scam text must raise a warning,
 must not.
 
 Build: `cd android && ./gradlew assembleDebug` (needs the Android SDK). The APK is installed
-directly ("install unknown apps"), not through the Play Store.
+directly ("install unknown apps"), not through the Play Store. Pushing a tag such as `v0.1.3`
+runs `.github/workflows/release.yml`, which tests, builds and attaches the APK to a GitHub Release.

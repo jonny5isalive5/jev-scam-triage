@@ -1,0 +1,43 @@
+name: release
+
+# Pushing a tag like v0.1.3 builds the app and publishes it on the repo's Releases page,
+# so there is one stable download link: /releases/latest
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+      - name: Tests, lint and build
+        working-directory: android
+        run: ./gradlew --no-daemon :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
+      - name: Name the APK after the version
+        run: cp android/app/build/outputs/apk/debug/app-debug.apk "ScamCheck-${GITHUB_REF_NAME}.apk"
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: ScamCheck-${{ github.ref_name }}.apk
+          body: |
+            **Scam Check** for Android: warns you about scam texts, using TypeSafe's Jev.
+
+            **Install**
+            1. On your Android phone, download `ScamCheck-${{ github.ref_name }}.apk` below.
+            2. Open it. If Android asks, allow installs from your browser or file manager.
+            3. Open Scam Check, paste your TypeSafe API key, tap **Save key** and allow the permissions.
+               Jev confirms it's watching and the app closes. It keeps working in the background.
+
+            Without a key it still runs the on-phone checks (fake brand links, link shorteners,
+            look-alike letters), just not Jev.
+
+            This is a test build, signed with a development key, so Android may warn that it's
+            from an unknown developer. If you installed an earlier copy that wasn't downloaded
+            from this page, uninstall it first.
