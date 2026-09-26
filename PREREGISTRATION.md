@@ -71,6 +71,32 @@ failures stated as plainly as successes.
 - Mock-mode numbers (keyword rules standing in for Jev) are reported only
   as a floor and are labelled as such.
 
+## Results of the live test run
+
+Run once on 2026-09-26 with `TYPESAFE_API_KEY` set, at commit `d83e220`
+(recorded in `results/test_ledger.jsonl`; per-message verdicts in
+`results/card_test_live_messages.jsonl`). 500 scams, 500 ordinary, 119 old
+spam (the whole old-spam test split). All 1,119 Jev calls succeeded. Before
+the run, one made-up message (not from any split) was sent to confirm Jev
+was reachable. Nothing listed above was changed after results were seen.
+
+1. **Catching scams: MET.** The checker caught 83.2% of scams vs 54.4% for
+   TF-IDF (2011 training): difference +28.8 points, 95% CI +24.0 to +33.8,
+   above zero.
+2. **Not crying wolf: MET (both parts), with little margin.** *Likely scam*
+   on 1.0% of ordinary messages (limit 2%); any warning on 9.0% (limit
+   10%). The 9.0% is close to the limit and well above what the baselines
+   give (TF-IDF 1.8%, keyword rules 0.4%).
+3. **Tactics (reported, no pass mark):** kappa 0.46 for urgency, 0.67 for
+   money/greed; claimed organisation matched scam type on 88% of mapped
+   messages.
+4. **The gate (reported):** forwards 90.0% of scams, 11.4% of ordinary
+   messages, 95.0% of old spam.
+
+As expected in advance, the checker did **not** beat TF-IDF trained on IMC
+scams as well (96.2% of scams flagged at 0.6% false alarms). It also caught
+less old 2011 spam (84.9%) than TF-IDF trained on 2011 SMS (93.3%).
+
 ## Limits this data cannot get around
 
 - No modern legitimate messages: bank alerts, delivery updates and
@@ -90,3 +116,15 @@ failures stated as plainly as successes.
   support a fair detection benchmark (no modern legitimate messages; IMC
   tactic labels come from GPT-4o). Validation-split numbers in mock mode
   had been seen at this point; no live Jev result had.
+- 2026-09-26: before the live test run, with no live Jev result seen (the
+  only live call so far was one made-up message, which the network blocked
+  before it reached Jev). `card.py` now (a) saves each message's verdict,
+  catch and baseline flags next to the card and computes measure 1's paired
+  bootstrap in the same run -- the card previously saved only percentages,
+  so measure 1 could not have been tested as written above; and (b) in live
+  mode, stops at the first failed Jev call without writing the card or the
+  ledger, so the one run can't be spent on code-only fallback verdicts. The
+  questions, the rule in `engine.py`, the sample and the thresholds are
+  unchanged.
+- 2026-09-26: the live test run was made (results above). No change to the
+  questions, the rule, the sample or the thresholds.
