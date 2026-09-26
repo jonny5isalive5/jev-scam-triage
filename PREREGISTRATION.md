@@ -90,3 +90,13 @@ failures stated as plainly as successes.
   support a fair detection benchmark (no modern legitimate messages; IMC
   tactic labels come from GPT-4o). Validation-split numbers in mock mode
   had been seen at this point; no live Jev result had.
+- 2026-09-26: before the live test run, with no live Jev result seen (the
+  only live call so far was one made-up message, which the network blocked
+  before it reached Jev). `card.py` now (a) saves each message's verdict,
+  catch and baseline flags next to the card and computes measure 1's paired
+  bootstrap in the same run -- the card previously saved only percentages,
+  so measure 1 could not have been tested as written above; and (b) in live
+  mode, stops at the first failed Jev call without writing the card or the
+  ledger, so the one run can't be spent on code-only fallback verdicts. The
+  questions, the rule in `engine.py`, the sample and the thresholds are
+  unchanged.

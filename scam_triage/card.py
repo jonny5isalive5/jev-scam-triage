@@ -17,6 +17,13 @@ checker's verdicts, and -- for comparison -- how often the two baselines
 threshold) flag it. On the scam group it also reports agreement between
 Jev's tactic answers and the dataset's GPT-4o tactic labels. Agreement with
 GPT-4o is not accuracy.
+
+Every message's verdict is saved next to the card (card_<split>_<mode>_messages.jsonl),
+and the scam group's catch rate is compared with TF-IDF (2011 training) by paired
+bootstrap on the same messages -- pre-registered measure 1.
+
+In live mode the run stops at the first failed Jev call, before anything is written:
+a verdict from the code-only fallback is not a Jev result.
 """
 
 import argparse
@@ -28,6 +35,10 @@ import sys
 from . import data, engine, jev_client, metrics
 from .baselines import KeywordRules, TfidfLogReg
 from .evaluate import LEDGER, _git_commit, _ledger_entries
+
+
+class JevCallFailed(RuntimeError):
+    """A live Jev call failed during a card run; the run is abandoned without recording anything."""
 
 # Dataset tactic labels -> the Jev answer that should match them.
 LURE_TO_QUESTION = {"time/urgency": "creates_pressure", "need and greed": "offers_money"}
@@ -86,12 +97,26 @@ def _baseline_flaggers():
     return flaggers
 
 
-def run(split: str, n: int | None) -> dict:
+def _check_all(texts: list[str], stop_on_jev_error: bool) -> list:
+    results = []
+    for i, text in enumerate(texts):
+        r = engine.check(text)
+        if stop_on_jev_error and r.error is not None:
+            raise JevCallFailed(f"Jev call failed on message {i + 1} of {len(texts)} in this group: {r.error}")
+        results.append(r)
+    return results
+
+
+def run(split: str, n: int | None, stop_on_jev_error: bool | None = None) -> tuple[dict, list[dict]]:
+    """Returns the card and one record per message (group, id, verdict, caught, baseline flags)."""
+    if stop_on_jev_error is None:
+        stop_on_jev_error = jev_client.mode() == "live"
     flaggers = _baseline_flaggers()
     card = {"split": split, "sample_per_group": n, "mode": jev_client.mode(), "groups": {}}
+    per_message = []
     for name, rows in groups(split, n).items():
         texts = [t for t, _, _ in rows]
-        results = [engine.check(t) for t in texts]
+        results = _check_all(texts, stop_on_jev_error)
         verdicts = [r.verdict for r in results]
         g = {
             "n": len(rows),
@@ -101,9 +126,19 @@ def run(split: str, n: int | None) -> dict:
             "looks_ordinary": verdicts.count(engine.LOOKS_ORDINARY) / len(rows),
             "jev_errors": sum(r.error is not None for r in results),
         }
+        flags = {}
         for bname, (model, thr) in flaggers.items():
-            g[f"{bname}_flagged"] = sum(s >= thr for s in model.score(texts)) / len(rows)
+            flags[bname] = [bool(s >= thr) for s in model.score(texts)]
+            g[f"{bname}_flagged"] = sum(flags[bname]) / len(rows)
+        caught = [v != engine.LOOKS_ORDINARY for v in verdicts]
+        for i, ((text, _, _), r) in enumerate(zip(rows, results)):
+            per_message.append({"group": name, "id": data.message_id(text), "verdict": r.verdict,
+                                "caught": caught[i], "gate": bool(r.gate), "jev_used": r.jev_used,
+                                **{f"{b}_flagged": f[i] for b, f in flags.items()}})
         if name == "scams":
+            # Measure 1: on scams every label is 1, so recall is the share caught.
+            g["checker_vs_tfidf_logreg_caught"] = metrics.paired_bootstrap(
+                [1] * len(rows), caught, flags["tfidf_logreg"], metric="recall")
             agreement = {}
             for lure, question in LURE_TO_QUESTION.items():
                 ok = [(lure in m["lures"], r.answers[question]["noul"] >= engine.YES)
@@ -114,7 +149,7 @@ def run(split: str, n: int | None) -> dict:
             agreement["scam_type_match"] = sum(a == b for a, b in mapped) / len(mapped) if mapped else None
             g["agreement_with_gpt4o_labels"] = agreement
         card["groups"][name] = g
-    return card
+    return card, per_message
 
 
 def render(card: dict) -> str:
@@ -133,6 +168,10 @@ def render(card: dict) -> str:
                        ("tfidf_in_domain_flagged", "baseline: TF-IDF (incl. IMC training) flags")]:
         cells = [str(g[k][key]) if key == "n" else f"{g[k][key]:.1%}" for k in ("scams", "ordinary", "old_spam")]
         out.append(f"| {label} | " + " | ".join(cells) + " |")
+    cmp = g["scams"].get("checker_vs_tfidf_logreg_caught")
+    if cmp:
+        out.append(f"\nScams caught, checker minus TF-IDF (2011 training), paired bootstrap: {cmp['diff']:+.1%} "
+                   f"(95% CI {cmp['ci_low']:+.1%} to {cmp['ci_high']:+.1%})")
     agr = g["scams"].get("agreement_with_gpt4o_labels", {})
     if agr:
         out.append("\nAgreement with the dataset's GPT-4o tactic labels (Cohen's kappa; not accuracy):")
@@ -155,14 +194,23 @@ def main(argv=None) -> int:
         if any((e["system"], e["dataset"]) == key for e in _ledger_entries()) and not args.rerun_reason:
             parser.error("A test card for this mode is already recorded; pass --rerun-reason to record why.")
 
-    card = run(args.split, args.sample)
+    try:
+        card, per_message = run(args.split, args.sample)
+    except JevCallFailed as exc:
+        print(f"Stopped: {exc}\nNothing was written; the ledger is unchanged.", file=sys.stderr)
+        return 1
     print(render(card))
     out = data.REPO_ROOT / "results" / f"card_{args.split}_{card['mode']}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(card, indent=1) + "\n")
+    messages_out = out.with_name(f"{out.stem}_messages.jsonl")
+    messages_text = "".join(json.dumps(m) + "\n" for m in per_message)
+    messages_out.write_text(messages_text)
     if args.split == "test":
         with LEDGER.open("a") as f:
             f.write(json.dumps({"system": "card", "dataset": card["mode"], "card": card, "commit": _git_commit(),
+                                "messages_file": messages_out.name,
+                                "messages_sha256": hashlib.sha256(messages_text.encode()).hexdigest(),
                                 "rerun_reason": args.rerun_reason,
                                 "at": datetime.datetime.now(datetime.timezone.utc).isoformat()}) + "\n")
     return 0
