@@ -19,6 +19,7 @@ run_instrumentation() {
   grep -q "^OK (" <<<"$out" || { echo "FAILED: $1"; exit 1; }
 }
 
+run_instrumentation "$PKG.GoldenCasesDeviceTest"
 run_instrumentation "$PKG.UiFlowTest"
 run_instrumentation "$PKG.SmsSetup"
 

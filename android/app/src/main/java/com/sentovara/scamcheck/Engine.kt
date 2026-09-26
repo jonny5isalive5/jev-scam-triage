@@ -23,8 +23,20 @@ data class Answer(val type: String, val noul: Double = 0.0, val choice: String? 
 data class Verdict(val verdict: String, val reasons: List<String>, val advice: String, val jevUsed: Boolean,
                    val error: String? = null)
 
+/**
+ * Java needs UNICODE_CHARACTER_CLASS for \w, \d and \b to be Unicode-aware, as they are in Python.
+ * Android's regex engine (ICU) is Unicode-aware already and throws if given the flag, which crashed
+ * every check on a real phone -- caught by the emulator test. So use the flag only where it exists.
+ */
+private val UNICODE_CLASSES: Int = try {
+    Pattern.compile("a", Pattern.UNICODE_CHARACTER_CLASS)
+    Pattern.UNICODE_CHARACTER_CLASS
+} catch (e: IllegalArgumentException) {
+    0
+}
+
 private fun compile(spec: JSONObject): Pattern {
-    var flags = Pattern.UNICODE_CHARACTER_CLASS
+    var flags = UNICODE_CLASSES
     if (spec.getBoolean("ignore_case")) flags = flags or Pattern.CASE_INSENSITIVE or Pattern.UNICODE_CASE
     return Pattern.compile(spec.getString("pattern"), flags)
 }
@@ -133,7 +145,7 @@ class Engine(private val spec: Spec) {
 
     fun mixedScriptWords(text: String): List<String> {
         val found = mutableListOf<String>()
-        val m = Pattern.compile("\\w+", Pattern.UNICODE_CHARACTER_CLASS).matcher(text)
+        val m = Pattern.compile("\\w+", UNICODE_CLASSES).matcher(text)
         while (m.find()) {
             val word = m.group()
             val scripts = mutableSetOf<Character.UnicodeScript>()

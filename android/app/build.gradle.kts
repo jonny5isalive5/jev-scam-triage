@@ -19,6 +19,9 @@ android {
     // The shared rules file (Jev questions, domain lists, regexes, golden cases) lives at the
     // repo root in spec/ and is written by `python -m scam_triage.spec`. It is bundled as an asset.
     sourceSets["main"].assets.srcDirs("../../spec")
+    // The golden-case checker runs both on the JVM (test/) and on a device (androidTest/).
+    sourceSets["test"].java.srcDirs("src/sharedTest/java")
+    sourceSets["androidTest"].java.srcDirs("src/sharedTest/java")
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
