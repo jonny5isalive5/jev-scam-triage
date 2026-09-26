@@ -48,7 +48,7 @@ class UiFlowTest {
         ActivityScenario.launch<MainActivity>(intent).use { scenario ->
             val details = waitForVerdict(scenario, "LIKELY SCAM")
             assertTrue(details, "rm-redelivery-royalmail.info" in details)
-            assertTrue(details, "No TypeSafe API key saved" in details)
+            assertTrue(details, Checker.NO_KEY in details)
         }
     }
 
