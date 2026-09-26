@@ -17,7 +17,8 @@
     <color name="ordinary">#1E6B3A</color>
     <color name="ordinary_soft">#E4F2E8</color>
     <!-- Sentovara header: the logo's teal on dark navy. -->
-    <color name="navy">#0F1A20</color>
+    <color name="navy">#0B0C10</color>
+    <color name="logo_bg">#0B0C10</color>
     <color name="teal_light">#5FD4C8</color>
     <color name="header_text_soft">#AAB4BE</color>
 </resources>

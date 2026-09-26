@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Solid in the logo's own background colour, so the Sentovara mark blends in. -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
-    <gradient android:angle="315" android:endColor="#132630" android:startColor="@color/navy" />
+    <solid android:color="@color/navy" />
     <corners android:radius="18dp" />
 </shape>

@@ -2,6 +2,7 @@
 <resources>
     <string name="app_name">Scam Check</string>
     <string name="by_sentovara">BY SENTOVARA GROUP</string>
+    <string name="logo_description">Sentovara Group logo</string>
 
     <string name="status_off">Not set up yet</string>
     <string name="status_on">● Protected: watching your texts</string>

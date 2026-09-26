@@ -70,7 +70,7 @@ class SmsReceiver : BroadcastReceiver() {
 
         val title = (if (v.verdict == LIKELY_SCAM) "Likely scam" else "Be careful") + " – text from $sender"
         val n = Notification.Builder(ctx, CHANNEL)
-            .setSmallIcon(R.drawable.ic_shield)
+            .setSmallIcon(R.drawable.ic_notify)
             .setContentTitle(title)
             .setContentText(v.reasons.firstOrNull() ?: v.advice)
             .setStyle(Notification.BigTextStyle().bigText(v.reasons.joinToString("\n") { "• $it" } + "\n\n" + v.advice))
