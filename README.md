@@ -138,8 +138,8 @@ GPT-4o, so agreement with them is reported as agreement, not accuracy.
 1. **This checker** -- paste in, get a verdict.
 2. **Gmail labeller** -- checks new mail in the background and adds a
    "Possible scam" label with the reason. Labels, never deletes.
-3. **Android** -- a personal app that checks incoming texts through the
-   gate and shows a warning. Installed directly, not through the Play Store.
+3. **Android** -- first version in `android/` (see below): paste/share checks and warnings for
+   incoming texts. Not yet tried on a real phone.
 
 ## Background
 
