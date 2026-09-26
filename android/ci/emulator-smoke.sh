@@ -39,3 +39,8 @@ if notifications | grep -q "text from 5559999"; then
   echo "FAILED: the ordinary SMS raised a warning"; exit 1
 fi
 echo "Emulator smoke test passed: scam SMS warned, ordinary SMS did not."
+
+# Small screenshots of the main screens, printed for review from the CI log. Not a check.
+adb logcat -c
+adb shell am instrument -w -e class "$PKG.ScreenshotDump" "$RUNNER" >/dev/null || true
+adb logcat -d -s SCREENSHOT:I | sed -n 's/.*SCREENSHOT: //p' || true
