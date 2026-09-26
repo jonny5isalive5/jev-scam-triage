@@ -64,19 +64,62 @@ class UiFlowTest {
         }
     }
 
+    private fun waitUntilClosed(scenario: ActivityScenario<MainActivity>) {
+        val deadline = System.currentTimeMillis() + MainActivity.AUTO_CLOSE_MS + 6_000
+        while (scenario.state != Lifecycle.State.DESTROYED && System.currentTimeMillis() < deadline) {
+            Thread.sleep(250)
+        }
+        assertEquals(Lifecycle.State.DESTROYED, scenario.state)
+    }
+
+    /** Saving a key during setup goes straight on to protection (permissions are pre-granted in CI). */
     @Test
-    fun savingAKeyUpdatesTheStatusLine() {
+    fun savingAKeyFinishesSetupAndCloses() {
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        var status = ""
+        scenario.onActivity {
+            it.findViewById<EditText>(R.id.api_key).setText("test-key-not-real")
+            it.findViewById<Button>(R.id.save_key).performClick()
+            status = it.findViewById<TextView>(R.id.key_status).text.toString()
+        }
+        assertTrue(status, status.startsWith("Key saved"))
+        assertEquals("test-key-not-real", Checker.apiKey(ctx))
+        waitUntilClosed(scenario)
+        assertTrue(Checker.prefs(ctx).getBoolean(Checker.KEY_AUTO, false))
+        scenario.close()
+        Checker.prefs(ctx).edit().clear().commit()
+    }
+
+    /**
+     * The bug from a real phone: protection was already on (from an earlier version), so saving
+     * the key only changed the status line and nothing seemed to happen. It must confirm and close.
+     */
+    @Test
+    fun savingAKeyWhenAlreadyProtectedConfirmsAndCloses() {
+        Checker.prefs(ctx).edit().putBoolean(Checker.KEY_AUTO, true).commit()
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        scenario.onActivity {
+            it.findViewById<EditText>(R.id.api_key).setText("test-key-not-real")
+            it.findViewById<Button>(R.id.save_key).performClick()
+        }
+        waitUntilClosed(scenario)
+        assertEquals("test-key-not-real", Checker.apiKey(ctx))
+        scenario.close()
+        Checker.prefs(ctx).edit().clear().commit()
+    }
+
+    /** Tapping Save key with an empty box says so and stays open. */
+    @Test
+    fun savingAnEmptyKeySaysSo() {
         ActivityScenario.launch(MainActivity::class.java).use { scenario ->
             var status = ""
             scenario.onActivity {
-                it.findViewById<EditText>(R.id.api_key).setText("test-key-not-real")
                 it.findViewById<Button>(R.id.save_key).performClick()
                 status = it.findViewById<TextView>(R.id.key_status).text.toString()
             }
-            assertTrue(status, status.startsWith("Key saved"))
-            assertEquals("test-key-not-real", Checker.apiKey(ctx))
+            assertEquals(ctx.getString(R.string.paste_key_first), status)
+            assertEquals(Lifecycle.State.RESUMED, scenario.state)
         }
-        Checker.prefs(ctx).edit().clear().commit()
     }
 
     /**
@@ -88,11 +131,7 @@ class UiFlowTest {
     fun startingProtectionConfirmsAndClosesTheApp() {
         val scenario = ActivityScenario.launch(MainActivity::class.java)
         scenario.onActivity { it.findViewById<Button>(R.id.start_protection).performClick() }
-        val deadline = System.currentTimeMillis() + MainActivity.AUTO_CLOSE_MS + 6_000
-        while (scenario.state != Lifecycle.State.DESTROYED && System.currentTimeMillis() < deadline) {
-            Thread.sleep(250)
-        }
-        assertEquals(Lifecycle.State.DESTROYED, scenario.state)
+        waitUntilClosed(scenario)
         assertTrue(Checker.prefs(ctx).getBoolean(Checker.KEY_AUTO, false))
         scenario.close()
         Checker.prefs(ctx).edit().clear().commit()

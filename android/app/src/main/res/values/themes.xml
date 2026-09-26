@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="AppTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+    <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
         <item name="android:colorPrimary">@color/brand</item>
         <item name="android:colorPrimaryDark">@color/brand_dark</item>
         <item name="android:colorAccent">@color/brand</item>
         <item name="android:statusBarColor">@color/navy</item>
         <item name="android:windowBackground">@color/page</item>
+        <item name="android:navigationBarColor">@color/page</item>
+        <item name="android:textColorPrimary">@color/text</item>
+        <item name="android:alertDialogTheme">@style/DialogTheme</item>
+    </style>
+    <style name="DialogTheme" parent="@android:style/Theme.Material.Dialog.Alert">
+        <item name="android:colorAccent">@color/teal_light</item>
+        <item name="android:windowBackground">@drawable/bg_dialog</item>
         <item name="android:textColorPrimary">@color/text</item>
     </style>
 </resources>
