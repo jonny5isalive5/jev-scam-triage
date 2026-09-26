@@ -28,6 +28,13 @@ object Checker {
     fun saveApiKey(ctx: Context, key: String) = prefs(ctx).edit().putString(KEY_API, key.trim()).apply()
 
     /**
+     * Whether a background check should raise a notification. A "be careful" that only means Jev
+     * couldn't be reached (no key, offline) would fire for every text from a non-contact, so in the
+     * background only a likely scam, or a "be careful" that Jev actually judged, raises a warning.
+     */
+    fun shouldWarn(v: Verdict): Boolean = v.verdict == LIKELY_SCAM || (v.verdict == BE_CAREFUL && v.jevUsed)
+
+    /**
      * `force = true` for a pasted or shared message (always checked in full).
      * `force = false` for background texts: the gate lets ordinary messages through untouched,
      * so they are never sent anywhere.
