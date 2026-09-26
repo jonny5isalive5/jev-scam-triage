@@ -17,9 +17,9 @@ What to do: Don't tap links or reply. If you think it might be real, check it th
 a delivery company's own app or website, not this message.
 ```
 
-**Status:** working end to end in mock mode (keyword rules standing in for
-Jev). The single live evaluation run is pre-registered in
-[PREREGISTRATION.md](PREREGISTRATION.md) and hasn't happened yet.
+**Status:** working end to end. The single pre-registered live evaluation
+run ([PREREGISTRATION.md](PREREGISTRATION.md)) was made on 2026-09-26; its
+results are in the Evaluation card below.
 
 ## Use it
 
@@ -67,20 +67,42 @@ paste page listens only on your own computer and doesn't log messages.
 
 ## Evaluation card
 
-From public data only, with what each number can and can't show. Current
-numbers are **mock mode on the validation split** -- they describe the
-keyword stand-in, not Jev. The live test-split card replaces them after the
-one recorded run.
+From public data only, with what each number can and can't show. These are
+the **live test-split results** from the one recorded run (2026-09-26, code at
+commit `d83e220`; `results/test_ledger.jsonl`). A fixed sample of 500 messages
+per group, or the whole group where smaller: the test split has only 119 old
+spam messages. All 1,119 messages were answered by Jev; there were no failed calls.
 
-| 500 per group, validation, MOCK | scams (IMC 2025) | ordinary (2011) | old spam (2011) |
+| 500 per group, test, LIVE | scams (IMC 2025) | ordinary (2011) | old spam (2011) |
 |---|---|---|---|
-| gate forwards to checker | 88.2% | 11.6% | 93.3% |
-| verdict: likely scam | 49.6% | 1.4% | 33.3% |
-| verdict: be careful | 30.4% | 6.8% | 20.8% |
-| verdict: looks ordinary | 20.0% | 91.8% | 45.8% |
-| keyword rules flag | 24.2% | 0.0% | 83.3% |
-| TF-IDF trained on 2011 SMS flags | 50.8% | 1.2% | 93.3% |
-| TF-IDF also trained on IMC scams flags | 95.2% | 1.4% | 80.0% |
+| messages | 500 | 500 | 119 |
+| gate forwards to checker | 90.0% | 11.4% | 95.0% |
+| verdict: likely scam | 55.6% | 1.0% | 49.6% |
+| verdict: be careful | 27.6% | 8.0% | 35.3% |
+| verdict: looks ordinary | 16.8% | 91.0% | 15.1% |
+| keyword rules flag | 21.4% | 0.4% | 79.0% |
+| TF-IDF trained on 2011 SMS flags | 54.4% | 1.8% | 93.3% |
+| TF-IDF also trained on IMC scams flags | 96.2% | 0.6% | 78.2% |
+
+Against the pre-registered measures:
+1. **Catching scams -- met.** The checker caught 83.2% of scams (likely scam
+   or be careful) vs 54.4% for TF-IDF trained on 2011 SMS: +28.8 points,
+   95% CI +24.0 to +33.8 (paired bootstrap on the same messages).
+2. **Not crying wolf -- met, only just.** On ordinary messages: *likely scam*
+   on 1.0% (limit 2%) and any warning on 9.0% (limit 10%). That is still
+   a lot more warnings than the baselines give on the same messages
+   (TF-IDF: 1.8%, keyword rules: 0.4%).
+3. **Tactics (agreement with GPT-4o labels, not accuracy):** urgency
+   kappa 0.46, money/greed kappa 0.67, claimed organisation matches scam type
+   88%.
+4. **The gate** forwards 90.0% of scams, 11.4% of ordinary messages and
+   95.0% of old spam.
+
+Not beaten: the TF-IDF model also trained on IMC scams flagged 96.2% of
+scams at 0.6% false alarms, better than the checker on both counts, as the
+pre-registration expected (see the caveat below). On 2011 marketing spam the
+checker caught 84.9%, less than the 2011-trained TF-IDF (93.3%), which was
+trained on that kind of message.
 
 What these can't tell you:
 - **No modern legitimate messages were tested.** Real bank alerts, delivery
@@ -95,7 +117,9 @@ What these can't tell you:
   can learn that instead of what makes a scam. The pre-registration says in
   advance that the checker isn't expected to beat it here.
 
-Reproduce: `python -m scam_triage.card --sample 500`.
+Per-message verdicts: `results/card_test_live_messages.jsonl`. The validation
+split can be re-run freely with `python -m scam_triage.card --sample 500`
+(mock mode without `TYPESAFE_API_KEY`). The test split is for the one recorded run.
 
 ## Data
 

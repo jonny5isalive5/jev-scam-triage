@@ -1,0 +1,51 @@
+{
+ "split": "test",
+ "sample_per_group": 500,
+ "mode": "live",
+ "groups": {
+  "scams": {
+   "n": 500,
+   "gate_forwarded": 0.9,
+   "likely_scam": 0.556,
+   "be_careful": 0.276,
+   "looks_ordinary": 0.168,
+   "jev_errors": 0,
+   "keyword_rules_flagged": 0.214,
+   "tfidf_logreg_flagged": 0.544,
+   "tfidf_in_domain_flagged": 0.962,
+   "checker_vs_tfidf_logreg_caught": {
+    "metric": "recall",
+    "diff": 0.2879999999999999,
+    "ci_low": 0.24,
+    "ci_high": 0.33799999999999997
+   },
+   "agreement_with_gpt4o_labels": {
+    "time/urgency": 0.4625764945865369,
+    "need and greed": 0.6665184526456203,
+    "scam_type_match": 0.8816568047337278
+   }
+  },
+  "ordinary": {
+   "n": 500,
+   "gate_forwarded": 0.114,
+   "likely_scam": 0.01,
+   "be_careful": 0.08,
+   "looks_ordinary": 0.91,
+   "jev_errors": 0,
+   "keyword_rules_flagged": 0.004,
+   "tfidf_logreg_flagged": 0.018,
+   "tfidf_in_domain_flagged": 0.006
+  },
+  "old_spam": {
+   "n": 119,
+   "gate_forwarded": 0.9495798319327731,
+   "likely_scam": 0.4957983193277311,
+   "be_careful": 0.35294117647058826,
+   "looks_ordinary": 0.15126050420168066,
+   "jev_errors": 0,
+   "keyword_rules_flagged": 0.7899159663865546,
+   "tfidf_logreg_flagged": 0.9327731092436975,
+   "tfidf_in_domain_flagged": 0.7815126050420168
+  }
+ }
+}
