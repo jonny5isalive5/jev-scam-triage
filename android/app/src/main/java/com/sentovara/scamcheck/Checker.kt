@@ -9,7 +9,7 @@ object Checker {
     private const val PREFS = "scamcheck"
     private const val KEY_API = "typesafe_api_key"
     const val KEY_AUTO = "auto_check_enabled"
-    const val NO_KEY = "No TypeSafe API key saved in Settings, so only the basic checks ran."
+    const val NO_KEY = "No TypeSafe key saved yet, so only the basic checks ran."
 
     @Volatile private var cached: Pair<Spec, Engine>? = null
 

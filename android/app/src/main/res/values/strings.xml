@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Scam Check</string>
-    <string name="paste_hint">Paste a text message or email here</string>
-    <string name="check">Check</string>
-    <string name="privacy">Links, codes, phone numbers and email addresses are hidden before a message is sent to Jev. Link checks run on this phone.</string>
-    <string name="settings">Settings</string>
-    <string name="api_key_hint">TypeSafe API key</string>
+    <string name="by_sentovara">BY SENTOVARA GROUP</string>
+    <string name="logo_description">Sentovara Group logo</string>
+
+    <string name="status_off">Not set up yet</string>
+    <string name="status_on">● Protected: watching your texts</string>
+
+    <string name="setup_title_off">Set up in two steps</string>
+    <string name="setup_body_off">It takes a minute. After that, Scam Check quietly checks your texts in the background.</string>
+    <string name="setup_title_on">You\'re protected</string>
+    <string name="setup_body_on">Jev checks incoming texts in the background and warns you if one looks like a scam. You can close this app; it keeps working.</string>
+
+    <string name="step1">1. Your TypeSafe key</string>
+    <string name="step1_on">Your TypeSafe key</string>
+    <string name="api_key_hint">Paste your TypeSafe API key</string>
+    <string name="api_key_hint_saved">Key saved ✓ (paste a new one to replace it)</string>
     <string name="save_key">Save key</string>
-    <string name="auto_check">Check incoming texts automatically</string>
+    <string name="step2">2. Turn on protection</string>
     <string name="auto_check_help">Texts with links, contact details, requests or money words are checked in the background. If one looks risky you get a warning. Nothing is deleted or blocked.</string>
+    <string name="start_protection">Start protection</string>
+    <string name="auto_check">Check incoming texts</string>
+    <string name="permission_needed">Scam Check needs permission to read incoming texts to protect you. Tap Start protection to try again.</string>
+
+    <string name="done_title">You\'re protected</string>
+    <string name="done_body">Jev will keep an eye on your texts from now on and warn you if one looks like a scam.\n\nScam Check will close now. It keeps working in the background.</string>
+    <string name="done_ok">Got it</string>
+    <string name="notifications_off_title">Almost done</string>
+    <string name="notifications_off_body">Texts are being checked, but notifications are turned off, so you won\'t see warnings. Allow notifications for Scam Check in your phone\'s Settings.</string>
+
+    <string name="check_title">Check a message yourself</string>
+    <string name="check_body">Paste a text or email you\'re not sure about, or share it to Scam Check from any app.</string>
+    <string name="paste_hint">Paste the message here</string>
+    <string name="check">Check message</string>
+
+    <string name="privacy">Links, codes, phone numbers and email addresses are hidden before a message is sent to Jev. Link checks run on this phone.</string>
     <string name="channel_name">Scam warnings</string>
 </resources>

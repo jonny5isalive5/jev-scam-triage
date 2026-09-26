@@ -4,6 +4,7 @@ import android.content.Intent
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -47,7 +48,7 @@ class UiFlowTest {
         ActivityScenario.launch<MainActivity>(intent).use { scenario ->
             val details = waitForVerdict(scenario, "LIKELY SCAM")
             assertTrue(details, "rm-redelivery-royalmail.info" in details)
-            assertTrue(details, "No TypeSafe API key saved" in details)
+            assertTrue(details, Checker.NO_KEY in details)
         }
     }
 
@@ -75,6 +76,25 @@ class UiFlowTest {
             assertTrue(status, status.startsWith("Key saved"))
             assertEquals("test-key-not-real", Checker.apiKey(ctx))
         }
+        Checker.prefs(ctx).edit().clear().commit()
+    }
+
+    /**
+     * Setup's last step: with the permissions already granted (ci/emulator-smoke.sh grants them),
+     * tapping Start protection switches background checking on, shows the confirmation, and the
+     * app closes by itself.
+     */
+    @Test
+    fun startingProtectionConfirmsAndClosesTheApp() {
+        val scenario = ActivityScenario.launch(MainActivity::class.java)
+        scenario.onActivity { it.findViewById<Button>(R.id.start_protection).performClick() }
+        val deadline = System.currentTimeMillis() + MainActivity.AUTO_CLOSE_MS + 6_000
+        while (scenario.state != Lifecycle.State.DESTROYED && System.currentTimeMillis() < deadline) {
+            Thread.sleep(250)
+        }
+        assertEquals(Lifecycle.State.DESTROYED, scenario.state)
+        assertTrue(Checker.prefs(ctx).getBoolean(Checker.KEY_AUTO, false))
+        scenario.close()
         Checker.prefs(ctx).edit().clear().commit()
     }
 }
