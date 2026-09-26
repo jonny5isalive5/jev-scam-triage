@@ -161,13 +161,19 @@ MIT -- see `LICENSE`. Dataset licences are listed above.
 - **Paste or share** a message into Scam Check to get a verdict with reasons.
 - **Check incoming texts** (optional switch): each new text goes through the on-phone gate;
   ordinary texts are never sent anywhere, risky ones raise a warning notification. Nothing is
-  deleted or blocked.
+  deleted or blocked. In the background a warning is raised for a *likely scam*, or for *be careful*
+  only when Jev actually judged the text -- "couldn't reach Jev" (no key, offline) never pops up a
+  warning, or every text from a non-contact would.
 - Link checks, masking and the gate run on the phone. With a TypeSafe key saved in the app's
   Settings, masked messages are also sent to Jev; without one, only the basic checks run.
 
 The phone and the Python package share one rules file, `spec/scam_check_spec.json` (written by
 `python -m scam_triage.spec`). The Android unit tests replay every worked example in it and must
 match the Python results exactly, so the app can't drift from the version that was evaluated.
+
+CI also runs the real app on an Android 14 emulator (`android/ci/emulator-smoke.sh`): UI flows,
+then real SMS messages sent to the emulator -- a scam text must raise a warning, an ordinary one
+must not.
 
 Build: `cd android && ./gradlew assembleDebug` (needs the Android SDK). The APK is installed
 directly ("install unknown apps"), not through the Play Store.

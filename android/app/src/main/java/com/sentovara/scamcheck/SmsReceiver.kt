@@ -38,7 +38,7 @@ class SmsReceiver : BroadcastReceiver() {
                 for ((sender, body) in bySender) {
                     val known = senderInContacts(app, sender)
                     val v = Checker.check(app, body.toString(), known, force = false, background = true)
-                    if (v.verdict != LOOKS_ORDINARY) warn(app, sender, body.toString(), known, v)
+                    if (Checker.shouldWarn(v)) warn(app, sender, body.toString(), known, v)
                 }
             } finally {
                 pending.finish()
