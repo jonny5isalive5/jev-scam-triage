@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:padding="16dp">
+
+        <EditText android:id="@+id/message" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:minLines="5" android:gravity="top"
+            android:hint="@string/paste_hint" android:inputType="textMultiLine" />
+
+        <Button android:id="@+id/check" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="@string/check" />
+
+        <TextView android:id="@+id/verdict" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="12dp"
+            android:textSize="22sp" android:textStyle="bold" />
+
+        <TextView android:id="@+id/details" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:textSize="16sp" android:lineSpacingExtra="4dp" />
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="16dp" android:text="@string/privacy" android:textSize="13sp"
+            android:textColor="#555555" />
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:layout_marginTop="28dp" android:text="@string/settings" android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <EditText android:id="@+id/api_key" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:hint="@string/api_key_hint"
+            android:inputType="textPassword" />
+
+        <Button android:id="@+id/save_key" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:text="@string/save_key" />
+
+        <TextView android:id="@+id/key_status" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:textSize="13sp" />
+
+        <Switch android:id="@+id/auto_check" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_marginTop="16dp"
+            android:text="@string/auto_check" />
+
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/auto_check_help" android:textSize="13sp" android:textColor="#555555" />
+    </LinearLayout>
+</ScrollView>
