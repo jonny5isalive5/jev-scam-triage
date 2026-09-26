@@ -50,7 +50,7 @@ class JevClient(private val spec: Spec, private val apiKey: String) {
             conn.outputStream.use { it.write(body.toString().toByteArray(Charsets.UTF_8)) }
             val status = conn.responseCode
             if (status == 429 || status >= 500) throw RetryableError("Jev returned HTTP $status")
-            if (status != 200) throw JevUnavailable("Jev returned HTTP $status (check the API key in Settings)")
+            if (status != 200) throw JevUnavailable("Jev returned HTTP $status (check your TypeSafe key)")
             val text = conn.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
             val answersJson = JSONObject(text).getJSONObject("answers")
             val answers = answersJson.keys().asSequence().associateWith { parseAnswer(answersJson.getJSONObject(it)) }
