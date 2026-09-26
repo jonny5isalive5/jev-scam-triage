@@ -21,6 +21,11 @@ run_instrumentation() {
 
 run_instrumentation "$PKG.GoldenCasesDeviceTest"
 run_instrumentation "$PKG.UiFlowTest"
+# Screenshots first, before any test SMS can put a notification over the app. Not a check.
+adb logcat -c
+adb shell am instrument -w -e class "$PKG.ScreenshotDump" "$RUNNER" >/dev/null || true
+adb logcat -d -s SCREENSHOT:I | sed -n 's/.*SCREENSHOT: //p' || true
+
 run_instrumentation "$PKG.SmsSetup"
 
 notifications() { adb shell dumpsys notification --noredact; }
@@ -40,7 +45,3 @@ if notifications | grep -q "text from 5559999"; then
 fi
 echo "Emulator smoke test passed: scam SMS warned, ordinary SMS did not."
 
-# Small screenshots of the main screens, printed for review from the CI log. Not a check.
-adb logcat -c
-adb shell am instrument -w -e class "$PKG.ScreenshotDump" "$RUNNER" >/dev/null || true
-adb logcat -d -s SCREENSHOT:I | sed -n 's/.*SCREENSHOT: //p' || true

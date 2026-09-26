@@ -95,8 +95,9 @@ class MainActivity : Activity() {
     }
 
     private fun showKeyStatus() {
-        keyStatus.text = if (Checker.apiKey(this) != null) "Key saved. Jev is used for checks."
-        else "No key saved: only the basic checks run."
+        val saved = Checker.apiKey(this) != null
+        keyStatus.text = if (saved) "Key saved. Jev is used for checks." else "No key saved: only the basic checks run."
+        keyBox.setHint(if (saved) R.string.api_key_hint_saved else R.string.api_key_hint)
     }
 
     private fun startProtection() {
