@@ -138,8 +138,8 @@ GPT-4o, so agreement with them is reported as agreement, not accuracy.
 1. **This checker** -- paste in, get a verdict.
 2. **Gmail labeller** -- checks new mail in the background and adds a
    "Possible scam" label with the reason. Labels, never deletes.
-3. **Android** -- a personal app that checks incoming texts through the
-   gate and shows a warning. Installed directly, not through the Play Store.
+3. **Android** -- first version in `android/` (see below): paste/share checks and warnings for
+   incoming texts. Not yet tried on a real phone.
 
 ## Background
 
@@ -153,3 +153,21 @@ examples exist.
 ## License
 
 MIT -- see `LICENSE`. Dataset licences are listed above.
+
+## Android app (Moto G15 and other Android phones)
+
+`android/` is a small app that runs the same checker on the phone:
+
+- **Paste or share** a message into Scam Check to get a verdict with reasons.
+- **Check incoming texts** (optional switch): each new text goes through the on-phone gate;
+  ordinary texts are never sent anywhere, risky ones raise a warning notification. Nothing is
+  deleted or blocked.
+- Link checks, masking and the gate run on the phone. With a TypeSafe key saved in the app's
+  Settings, masked messages are also sent to Jev; without one, only the basic checks run.
+
+The phone and the Python package share one rules file, `spec/scam_check_spec.json` (written by
+`python -m scam_triage.spec`). The Android unit tests replay every worked example in it and must
+match the Python results exactly, so the app can't drift from the version that was evaluated.
+
+Build: `cd android && ./gradlew assembleDebug` (needs the Android SDK). The APK is installed
+directly ("install unknown apps"), not through the Play Store.

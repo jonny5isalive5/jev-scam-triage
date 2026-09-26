@@ -1,0 +1,1574 @@
+{
+ "version": 1,
+ "api": {
+  "base_url": "https://api.typesafe.ai",
+  "path": "/v1/systemone",
+  "model": "jev-latest",
+  "request_timeout_s": 5.0
+ },
+ "questions": {
+  "asks_for_action": {
+   "type": "noul",
+   "instructions": "The message asks the reader to tap a link, call or text a number, reply, or make a payment."
+  },
+  "asks_for_sensitive_info": {
+   "type": "noul",
+   "instructions": "The message asks the reader to give or confirm sensitive information: a password, one-time code, PIN, card or bank details, or personal identity details."
+  },
+  "creates_pressure": {
+   "type": "noul",
+   "instructions": "The message pushes the reader to act quickly: a deadline, a threat of a fee, block, fine, missed delivery, or other loss if they don't act."
+  },
+  "offers_money": {
+   "type": "noul",
+   "instructions": "The message offers the reader money, a prize, a refund, a reward, or a job with unusually easy pay."
+  },
+  "personal_pretext": {
+   "type": "noul",
+   "instructions": "The message opens a personal conversation from someone the reader may not know: a relative on a new number, a 'wrong number', a stranger being friendly, or someone asking for a favour."
+  },
+  "claims_to_be": {
+   "type": "choice",
+   "instructions": "What kind of organisation, if any, does the message present itself as coming from?",
+   "criteria": {
+    "bank_or_payments": "A bank, card issuer, payment app, or lender",
+    "government": "A government body, tax office, court, police, or health service",
+    "delivery": "A courier, postal service, or delivery company",
+    "telecom_or_utility": "A mobile network, broadband, energy, or water provider",
+    "online_service_or_retailer": "An online shop, streaming service, tech company, or app",
+    "employer_or_recruiter": "An employer, recruiter, or job offer",
+    "none": "It doesn't claim to come from any organisation (a person, or no identity at all)"
+   }
+  }
+ },
+ "organisation_words": {
+  "bank_or_payments": "your bank or a payment company",
+  "government": "a government body",
+  "delivery": "a delivery company",
+  "telecom_or_utility": "your phone or utility provider",
+  "online_service_or_retailer": "an online shop or service",
+  "employer_or_recruiter": "an employer or recruiter"
+ },
+ "yes_threshold": 0.5,
+ "links": {
+  "url_regex": {
+   "pattern": "(?:https?://|www\\.)[^\\s<>\\\"']+|\\b(?:[a-z0-9-]+\\.)+(?:com|net|org|info|biz|co|uk|us|io|me|ly|xyz|top|link|app|site|online|live|shop|click|gd|at|cc|id|de|es|fr|ru|cn|in)\\b(?:/[^\\s<>\\\"']*)?",
+   "ignore_case": true
+  },
+  "shorteners": [
+   "bit.do",
+   "bit.ly",
+   "bitly.ws",
+   "buff.ly",
+   "cutt.ly",
+   "goo.gl",
+   "is.gd",
+   "ow.ly",
+   "qr.ae",
+   "rb.gy",
+   "rebrand.ly",
+   "s.id",
+   "shorturl.at",
+   "shrtco.de",
+   "t.co",
+   "t.ly",
+   "tiny.cc",
+   "tinyurl.com",
+   "v.gd"
+  ],
+  "official_domains": [
+   [
+    "royalmail",
+    [
+     "royalmail.co.uk",
+     "royalmail.com"
+    ]
+   ],
+   [
+    "evri",
+    [
+     "evri.com"
+    ]
+   ],
+   [
+    "hermes",
+    [
+     "evri.com",
+     "myhermes.co.uk"
+    ]
+   ],
+   [
+    "dpd",
+    [
+     "dpd.co.uk",
+     "dpd.com"
+    ]
+   ],
+   [
+    "dhl",
+    [
+     "dhl.co.uk",
+     "dhl.com"
+    ]
+   ],
+   [
+    "fedex",
+    [
+     "fedex.com"
+    ]
+   ],
+   [
+    "ups",
+    [
+     "ups.com"
+    ]
+   ],
+   [
+    "usps",
+    [
+     "usps.com"
+    ]
+   ],
+   [
+    "amazon",
+    [
+     "amazon.co.uk",
+     "amazon.com"
+    ]
+   ],
+   [
+    "paypal",
+    [
+     "paypal.co.uk",
+     "paypal.com"
+    ]
+   ],
+   [
+    "apple",
+    [
+     "apple.com"
+    ]
+   ],
+   [
+    "icloud",
+    [
+     "apple.com",
+     "icloud.com"
+    ]
+   ],
+   [
+    "netflix",
+    [
+     "netflix.com"
+    ]
+   ],
+   [
+    "microsoft",
+    [
+     "live.com",
+     "microsoft.com",
+     "outlook.com"
+    ]
+   ],
+   [
+    "google",
+    [
+     "google.co.uk",
+     "google.com"
+    ]
+   ],
+   [
+    "hmrc",
+    [
+     "gov.uk"
+    ]
+   ],
+   [
+    "dvla",
+    [
+     "gov.uk"
+    ]
+   ],
+   [
+    "nhs",
+    [
+     "nhs.uk"
+    ]
+   ],
+   [
+    "irs",
+    [
+     "irs.gov"
+    ]
+   ],
+   [
+    "barclays",
+    [
+     "barclays.co.uk",
+     "barclays.com"
+    ]
+   ],
+   [
+    "hsbc",
+    [
+     "hsbc.co.uk",
+     "hsbc.com"
+    ]
+   ],
+   [
+    "lloyds",
+    [
+     "lloydsbank.co.uk",
+     "lloydsbank.com"
+    ]
+   ],
+   [
+    "natwest",
+    [
+     "natwest.com"
+    ]
+   ],
+   [
+    "santander",
+    [
+     "santander.co.uk",
+     "santander.com"
+    ]
+   ],
+   [
+    "halifax",
+    [
+     "halifax.co.uk"
+    ]
+   ],
+   [
+    "monzo",
+    [
+     "monzo.com"
+    ]
+   ],
+   [
+    "revolut",
+    [
+     "revolut.com"
+    ]
+   ],
+   [
+    "chase",
+    [
+     "chase.co.uk",
+     "chase.com"
+    ]
+   ],
+   [
+    "wellsfargo",
+    [
+     "wellsfargo.com"
+    ]
+   ],
+   [
+    "vodafone",
+    [
+     "vodafone.co.uk",
+     "vodafone.com"
+    ]
+   ],
+   [
+    "o2",
+    [
+     "o2.co.uk"
+    ]
+   ],
+   [
+    "tmobile",
+    [
+     "t-mobile.com"
+    ]
+   ],
+   [
+    "verizon",
+    [
+     "verizon.com"
+    ]
+   ],
+   [
+    "whatsapp",
+    [
+     "wa.me",
+     "whatsapp.com"
+    ]
+   ]
+  ],
+  "two_part_suffixes": [
+   "ac.uk",
+   "co.in",
+   "co.nz",
+   "co.uk",
+   "com.au",
+   "gov.uk",
+   "org.uk"
+  ]
+ },
+ "mask": {
+  "email_regex": {
+   "pattern": "\\b[\\w.+-]+@[\\w-]+(?:\\.[\\w-]+)+\\b",
+   "ignore_case": false
+  },
+  "phone_regex": {
+   "pattern": "(?<![\\w£$€])\\+?\\d[\\d \\-()]{6,}\\d(?!\\w)",
+   "ignore_case": false
+  },
+  "long_number_regex": {
+   "pattern": "(?<![\\w£$€.,])\\d{4,}(?![\\w.,]\\d)",
+   "ignore_case": false
+  }
+ },
+ "gate_rules": [
+  [
+   "link",
+   {
+    "pattern": "<URL>|https?://|www\\.|\\b[a-z0-9-]+\\.(com|net|org|info|co|uk|ly|me|io|xyz|top|biz|link|app)\\b",
+    "ignore_case": true
+   }
+  ],
+  [
+   "contact_point",
+   {
+    "pattern": "<PHONE_NUMBER>|<EMAIL_ADDRESS>|\\+?\\d[\\d \\-]{7,}\\d|\\b[\\w.]+@[\\w.]+\\b|whats ?app",
+    "ignore_case": true
+   }
+  ],
+  [
+   "asks_for_action",
+   {
+    "pattern": "\\b(click|tap|call|reply|text|txt|pay|verify|update|confirm|login|log in|visit|download|contact|send|claim|reschedule)\\b",
+    "ignore_case": true
+   }
+  ],
+  [
+   "money_or_account",
+   {
+    "pattern": "[£$€₹]|\\b(rs\\.?|inr|usd|refund|payment|prize|cash|fee|bank|account|card)\\b",
+    "ignore_case": true
+   }
+  ]
+ ],
+ "golden": [
+  {
+   "message": "Royal Mail: your parcel is on hold due to an unpaid £1.45 fee. Pay within 24 hrs or it will be returned: https://rm-redelivery-royalmail.info/pay",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "delivery",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.8,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.03333333333333333
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Royal Mail: your parcel is on hold due to an unpaid £1.45 fee. Pay within 24 hrs or it will be returned: <URL>",
+    "gate": [
+     "link",
+     "asks_for_action",
+     "money_or_account"
+    ],
+    "links": [
+     {
+      "domain": "rm-redelivery-royalmail.info",
+      "registrable": "rm-redelivery-royalmail.info",
+      "shortener": false,
+      "lookalike_of": "royalmail"
+     }
+    ],
+    "verdict": "likely_scam",
+    "reasons": [
+     "The link goes to rm-redelivery-royalmail.info, which uses the name 'royalmail' but isn't its real website.",
+     "It presents itself as coming from a delivery company.",
+     "It asks you to tap a link, call, reply, or pay.",
+     "It rushes you with a deadline or a threat of losing something."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through a delivery company's own app or website, not this message."
+   }
+  },
+  {
+   "message": "running 10 mins late, see you at the cafe",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "none",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.8
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "running 10 mins late, see you at the cafe",
+    "gate": [],
+    "links": [],
+    "verdict": "looks_ordinary",
+    "reasons": [
+     "Nothing in it matches the patterns scams use."
+    ],
+    "advice": "Nothing here looks like a scam, but that isn't a guarantee. If it asks for money or details later, check again."
+   }
+  },
+  {
+   "message": "Hi mum, this is my new number, my phone broke. Can you text me back?",
+   "sender_known": false,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "none",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.8
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Hi mum, this is my new number, my phone broke. Can you text me back?",
+    "gate": [
+     "asks_for_action",
+     "unknown_sender"
+    ],
+    "links": [],
+    "verdict": "be_careful",
+    "reasons": [
+     "The sender isn't in your contacts.",
+     "It asks you to tap a link, call, reply, or pay.",
+     "It starts a personal conversation from someone you may not know."
+    ],
+    "advice": "Don't reply to this number or send money. If it claims to be someone you know, call them on the number you already have for them."
+   }
+  },
+  {
+   "message": "Your Uber code is 4829. Never share this code.",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "none",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.8
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Your Uber code is <NUMBER>. Never share this code.",
+    "gate": [],
+    "links": [],
+    "verdict": "likely_scam",
+    "reasons": [
+     "It asks for passwords, codes, card or bank details, or personal details."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through a number or website you already trust, not this message."
+   }
+  },
+  {
+   "message": "URGENT: your HSBC account is locked. Verify your details at http://hsbc-secure-login.xyz within 2 hours",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "bank_or_payments",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.8,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.03333333333333333
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "URGENT: your HSBC account is locked. Verify your details at <URL> within 2 hours",
+    "gate": [
+     "link",
+     "asks_for_action",
+     "money_or_account"
+    ],
+    "links": [
+     {
+      "domain": "hsbc-secure-login.xyz",
+      "registrable": "hsbc-secure-login.xyz",
+      "shortener": false,
+      "lookalike_of": "hsbc"
+     }
+    ],
+    "verdict": "likely_scam",
+    "reasons": [
+     "The link goes to hsbc-secure-login.xyz, which uses the name 'hsbc' but isn't its real website.",
+     "It presents itself as coming from your bank or a payment company.",
+     "It asks for passwords, codes, card or bank details, or personal details.",
+     "It asks you to tap a link, call, reply, or pay.",
+     "It rushes you with a deadline or a threat of losing something."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through your bank or a payment company's own app or website, not this message."
+   }
+  },
+  {
+   "message": "Track your parcel at https://www.royalmail.com/track-your-item.",
+   "sender_known": true,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "delivery",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.8,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.03333333333333333
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Track your parcel at <URL>.",
+    "gate": [
+     "link"
+    ],
+    "links": [
+     {
+      "domain": "www.royalmail.com",
+      "registrable": "royalmail.com",
+      "shortener": false,
+      "lookalike_of": null
+     }
+    ],
+    "verdict": "be_careful",
+    "reasons": [
+     "It presents itself as coming from a delivery company.",
+     "It asks you to tap a link, call, reply, or pay."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through a delivery company's own app or website, not this message."
+   }
+  },
+  {
+   "message": "HMRC: you are owed a tax refund of £326.40. Claim at hmrc-gov-refund.com before it expires",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "government",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.8,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.03333333333333333
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "HMRC: you are owed a tax refund of £326.40. Claim at <URL> before it expires",
+    "gate": [
+     "link",
+     "asks_for_action",
+     "money_or_account"
+    ],
+    "links": [
+     {
+      "domain": "hmrc-gov-refund.com",
+      "registrable": "hmrc-gov-refund.com",
+      "shortener": false,
+      "lookalike_of": "hmrc"
+     }
+    ],
+    "verdict": "likely_scam",
+    "reasons": [
+     "The link goes to hmrc-gov-refund.com, which uses the name 'hmrc' but isn't its real website.",
+     "It presents itself as coming from a government body.",
+     "It asks you to tap a link, call, reply, or pay.",
+     "It rushes you with a deadline or a threat of losing something.",
+     "It offers money, a prize, a refund, or easy pay."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through a government body's own app or website, not this message."
+   }
+  },
+  {
+   "message": "Congratulations! You have WON a £500 voucher. Reply YES to claim",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "none",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.8
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Congratulations! You have WON a £500 voucher. Reply YES to claim",
+    "gate": [
+     "asks_for_action",
+     "money_or_account"
+    ],
+    "links": [],
+    "verdict": "likely_scam",
+    "reasons": [
+     "It asks you to tap a link, call, reply, or pay.",
+     "It offers money, a prize, a refund, or easy pay."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through a number or website you already trust, not this message."
+   }
+  },
+  {
+   "message": "Ηello аll, guуsǃ check this out bit.ly/3xYz",
+   "sender_known": false,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "none",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.8
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Ηello аll, guуsǃ check this out <URL>",
+    "gate": [
+     "link",
+     "look_alike_letters",
+     "unknown_sender"
+    ],
+    "links": [
+     {
+      "domain": "bit.ly",
+      "registrable": "bit.ly",
+      "shortener": true,
+      "lookalike_of": null
+     }
+    ],
+    "verdict": "likely_scam",
+    "reasons": [
+     "The link is shortened, so you can't see where it really goes.",
+     "Some words use look-alike letters from other alphabets, a trick to slip past filters.",
+     "The sender isn't in your contacts.",
+     "It asks you to tap a link, call, reply, or pay."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through a number or website you already trust, not this message."
+   }
+  },
+  {
+   "message": "Your Barclays card ending 1234 was used for £49.99 at TESCO. Not you? Call 0345 734 5345",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "bank_or_payments",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.8,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.03333333333333333
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Your Barclays card ending <NUMBER> was used for £49.99 at TESCO. Not you? Call <PHONE_NUMBER>",
+    "gate": [
+     "contact_point",
+     "asks_for_action",
+     "money_or_account"
+    ],
+    "links": [],
+    "verdict": "be_careful",
+    "reasons": [
+     "It presents itself as coming from your bank or a payment company.",
+     "It asks you to tap a link, call, reply, or pay."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through your bank or a payment company's own app or website, not this message."
+   }
+  },
+  {
+   "message": "Delivery attempt failed. Reschedule: https://evri-redelivery.top/abc, fee £0.99.",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "delivery",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.8,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.03333333333333333
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Delivery attempt failed. Reschedule: <URL>, fee £0.99.",
+    "gate": [
+     "link",
+     "asks_for_action",
+     "money_or_account"
+    ],
+    "links": [
+     {
+      "domain": "evri-redelivery.top",
+      "registrable": "evri-redelivery.top",
+      "shortener": false,
+      "lookalike_of": "evri"
+     }
+    ],
+    "verdict": "likely_scam",
+    "reasons": [
+     "The link goes to evri-redelivery.top, which uses the name 'evri' but isn't its real website.",
+     "It presents itself as coming from a delivery company.",
+     "It asks you to tap a link, call, reply, or pay."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through a delivery company's own app or website, not this message."
+   }
+  },
+  {
+   "message": "Hey it's Sam, are we still on for Saturday?",
+   "sender_known": true,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "none",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.8
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Hey it's Sam, are we still on for Saturday?",
+    "gate": [],
+    "links": [],
+    "verdict": "looks_ordinary",
+    "reasons": [
+     "Nothing in it matches the patterns scams use."
+    ],
+    "advice": "Nothing here looks like a scam, but that isn't a guarantee. If it asks for money or details later, check again."
+   }
+  },
+  {
+   "message": "Your NHS COVID pass is ready. Download it at nhs-covidpass.info",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "government",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.8,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.03333333333333333
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Your NHS COVID pass is ready. Download it at <URL>",
+    "gate": [
+     "link",
+     "asks_for_action"
+    ],
+    "links": [
+     {
+      "domain": "nhs-covidpass.info",
+      "registrable": "nhs-covidpass.info",
+      "shortener": false,
+      "lookalike_of": "nhs"
+     }
+    ],
+    "verdict": "likely_scam",
+    "reasons": [
+     "The link goes to nhs-covidpass.info, which uses the name 'nhs' but isn't its real website.",
+     "It presents itself as coming from a government body.",
+     "It asks you to tap a link, call, reply, or pay."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through a government body's own app or website, not this message."
+   }
+  },
+  {
+   "message": "Netflix: your payment failed. Update your card at www.netflix.com/account",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "bank_or_payments",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.8,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.03333333333333333
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Netflix: your payment failed. Update your card at <URL>",
+    "gate": [
+     "link",
+     "asks_for_action",
+     "money_or_account"
+    ],
+    "links": [
+     {
+      "domain": "www.netflix.com",
+      "registrable": "netflix.com",
+      "shortener": false,
+      "lookalike_of": null
+     }
+    ],
+    "verdict": "be_careful",
+    "reasons": [
+     "It presents itself as coming from your bank or a payment company.",
+     "It asks you to tap a link, call, reply, or pay."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through your bank or a payment company's own app or website, not this message."
+   }
+  },
+  {
+   "message": "Sorry to bother you, is this Linda? We met at the conference last week",
+   "sender_known": false,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "none",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.8
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Sorry to bother you, is this Linda? We met at the conference last week",
+    "gate": [
+     "unknown_sender"
+    ],
+    "links": [],
+    "verdict": "be_careful",
+    "reasons": [
+     "The sender isn't in your contacts.",
+     "It starts a personal conversation from someone you may not know."
+    ],
+    "advice": "Don't reply to this number or send money. If it claims to be someone you know, call them on the number you already have for them."
+   }
+  },
+  {
+   "message": "Your O2 bill of £32.50 is ready. View it in the My O2 app.",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "telecom_or_utility",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.8,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.03333333333333333
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Your O2 bill of £32.50 is ready. View it in the My O2 app.",
+    "gate": [
+     "money_or_account"
+    ],
+    "links": [],
+    "verdict": "looks_ordinary",
+    "reasons": [
+     "It presents itself as coming from your phone or utility provider."
+    ],
+    "advice": "Nothing here looks like a scam, but that isn't a guarantee. If it asks for money or details later, check again."
+   }
+  },
+  {
+   "message": "Email support@secure-paypal-help.com with your password to restore access",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "none",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.8
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Email <EMAIL_ADDRESS> with your password to restore access",
+    "gate": [
+     "link",
+     "contact_point"
+    ],
+    "links": [
+     {
+      "domain": "secure-paypal-help.com",
+      "registrable": "secure-paypal-help.com",
+      "shortener": false,
+      "lookalike_of": "paypal"
+     }
+    ],
+    "verdict": "likely_scam",
+    "reasons": [
+     "The link goes to secure-paypal-help.com, which uses the name 'paypal' but isn't its real website.",
+     "It asks for passwords, codes, card or bank details, or personal details."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through a number or website you already trust, not this message."
+   }
+  },
+  {
+   "message": "Job offer: earn £300/day working from home, WhatsApp +44 7700 900123",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "employer_or_recruiter",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.8,
+      "none": 0.03333333333333333
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Job offer: earn £300/day working from home, WhatsApp <PHONE_NUMBER>",
+    "gate": [
+     "contact_point",
+     "money_or_account"
+    ],
+    "links": [],
+    "verdict": "be_careful",
+    "reasons": [
+     "It presents itself as coming from an employer or recruiter.",
+     "It offers money, a prize, a refund, or easy pay."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through an employer or recruiter's own app or website, not this message."
+   }
+  },
+  {
+   "message": "Meeting moved to 3pm, room 4012",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "none",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.03333333333333333,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.8
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Meeting moved to 3pm, room <NUMBER>",
+    "gate": [],
+    "links": [],
+    "verdict": "looks_ordinary",
+    "reasons": [
+     "Nothing in it matches the patterns scams use."
+    ],
+    "advice": "Nothing here looks like a scam, but that isn't a guarantee. If it asks for money or details later, check again."
+   }
+  },
+  {
+   "message": "Your parcel is waiting. Confirm delivery here: https://tinyurl.com/dpd-uk-fee",
+   "sender_known": null,
+   "answers": {
+    "asks_for_action": {
+     "type": "noul",
+     "noul": 0.9
+    },
+    "asks_for_sensitive_info": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "creates_pressure": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "offers_money": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "personal_pretext": {
+     "type": "noul",
+     "noul": 0.1
+    },
+    "claims_to_be": {
+     "type": "choice",
+     "choice": "delivery",
+     "confidence": 0.8,
+     "probabilities": {
+      "bank_or_payments": 0.03333333333333333,
+      "government": 0.03333333333333333,
+      "delivery": 0.8,
+      "telecom_or_utility": 0.03333333333333333,
+      "online_service_or_retailer": 0.03333333333333333,
+      "employer_or_recruiter": 0.03333333333333333,
+      "none": 0.03333333333333333
+     }
+    }
+   },
+   "error": null,
+   "expected": {
+    "masked": "Your parcel is waiting. Confirm delivery here: <URL>",
+    "gate": [
+     "link",
+     "asks_for_action",
+     "money_or_account"
+    ],
+    "links": [
+     {
+      "domain": "tinyurl.com",
+      "registrable": "tinyurl.com",
+      "shortener": true,
+      "lookalike_of": null
+     }
+    ],
+    "verdict": "be_careful",
+    "reasons": [
+     "The link is shortened, so you can't see where it really goes.",
+     "It presents itself as coming from a delivery company.",
+     "It asks you to tap a link, call, reply, or pay."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through a delivery company's own app or website, not this message."
+   }
+  },
+  {
+   "message": "Royal Mail: your parcel is on hold due to an unpaid £1.45 fee. Pay within 24 hrs or it will be returned: https://rm-redelivery-royalmail.info/pay",
+   "sender_known": null,
+   "answers": null,
+   "error": "timeout",
+   "expected": {
+    "masked": "Royal Mail: your parcel is on hold due to an unpaid £1.45 fee. Pay within 24 hrs or it will be returned: <URL>",
+    "gate": [
+     "link",
+     "asks_for_action",
+     "money_or_account"
+    ],
+    "links": [
+     {
+      "domain": "rm-redelivery-royalmail.info",
+      "registrable": "rm-redelivery-royalmail.info",
+      "shortener": false,
+      "lookalike_of": "royalmail"
+     }
+    ],
+    "verdict": "likely_scam",
+    "reasons": [
+     "The link goes to rm-redelivery-royalmail.info, which uses the name 'royalmail' but isn't its real website.",
+     "Couldn't reach the checker, so only the basic checks ran."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through a number or website you already trust, not this message."
+   }
+  },
+  {
+   "message": "running 10 mins late, see you at the cafe",
+   "sender_known": null,
+   "answers": null,
+   "error": "timeout",
+   "expected": {
+    "masked": "running 10 mins late, see you at the cafe",
+    "gate": [],
+    "links": [],
+    "verdict": "be_careful",
+    "reasons": [
+     "Couldn't reach the checker, so only the basic checks ran."
+    ],
+    "advice": "Don't tap links or reply. If you think it might be real, check it through a number or website you already trust, not this message."
+   }
+  }
+ ]
+}

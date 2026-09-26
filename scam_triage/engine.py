@@ -71,7 +71,21 @@ def check(message: str, sender_known: bool | None = None, force: bool = True) ->
     if not force and not gate:
         return Result(LOOKS_ORDINARY, ["No links, contact details, requests, or money mentioned."],
                       _advice(LOOKS_ORDINARY, None), gate, False, jev_client.mode())
+    try:
+        answers, error = jev_client.ask({"message": mask_for_jev(message)}), None
+    except jev_client.JevUnavailable as exc:
+        answers, error = None, str(exc)
+    return decide(message, sender_known, answers, error, gate, jev_client.mode())
 
+
+def decide(message: str, sender_known: bool | None, answers: dict | None, error: str | None = None,
+           gate: list[str] | None = None, mode: str = "mock") -> Result:
+    """
+    The pure combination step: code checks on the raw message plus Jev's answers (or None when Jev
+    couldn't be reached) -> verdict. No network. The Android app implements this same function and
+    is tested against golden cases generated from it (see spec.py).
+    """
+    gate = gate_reasons(message, sender_known) if gate is None else gate
     links = extract_links(message)
     lookalikes = sorted({l.lookalike_of for l in links if l.lookalike_of})
     shortener = any(l.shortener for l in links)
@@ -89,12 +103,10 @@ def check(message: str, sender_known: bool | None = None, force: bool = True) ->
     if sender_known is False:
         code_reasons.append("The sender isn't in your contacts.")
 
-    try:
-        answers = jev_client.ask({"message": mask_for_jev(message)})
-    except jev_client.JevUnavailable as exc:
+    if answers is None:
         verdict = LIKELY_SCAM if (lookalikes or odd_letters) else BE_CAREFUL
         reasons = code_reasons + ["Couldn't reach the checker, so only the basic checks ran."]
-        return Result(verdict, reasons, _advice(verdict, None), gate, False, jev_client.mode(), error=str(exc))
+        return Result(verdict, reasons, _advice(verdict, None), gate, False, mode, error=error)
 
     said = {name: answers[name]["noul"] >= YES for name, a in answers.items() if a["type"] == "noul"}
     claim = answers["claims_to_be"]
@@ -131,4 +143,4 @@ def check(message: str, sender_known: bool | None = None, force: bool = True) ->
     verdict = LIKELY_SCAM if likely else BE_CAREFUL if careful else LOOKS_ORDINARY
     reasons = code_reasons + jev_reasons or ["Nothing in it matches the patterns scams use."]
     advice = _advice(verdict, org, personal=said.get("personal_pretext", False))
-    return Result(verdict, reasons, advice, gate, True, jev_client.mode(), answers)
+    return Result(verdict, reasons, advice, gate, True, mode, answers)
