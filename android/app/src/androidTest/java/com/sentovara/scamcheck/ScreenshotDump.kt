@@ -50,6 +50,15 @@ class ScreenshotDump {
 
         Checker.prefs(ctx).edit().putBoolean(Checker.KEY_AUTO, true).commit()
         ActivityScenario.launch(MainActivity::class.java).use { dump("protected") }
+
+        // The "Jev is watching" confirmation, caught before it closes the app.
+        ActivityScenario.launch(MainActivity::class.java).use { scenario ->
+            scenario.onActivity {
+                it.findViewById<android.widget.EditText>(R.id.api_key).setText("screenshot-key")
+                it.findViewById<android.widget.Button>(R.id.save_key).performClick()
+            }
+            dump("confirm")
+        }
         Checker.prefs(ctx).edit().clear().commit()
     }
 }

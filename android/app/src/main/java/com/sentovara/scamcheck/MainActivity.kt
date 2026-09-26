@@ -39,7 +39,7 @@ class MainActivity : Activity() {
         keyStatus = findViewById(R.id.key_status)
 
         findViewById<Button>(R.id.check).setOnClickListener { runCheck(null) }
-        findViewById<Button>(R.id.save_key).setOnClickListener { saveKeyFromBox() }
+        findViewById<Button>(R.id.save_key).setOnClickListener { saveKeyTapped() }
         findViewById<Button>(R.id.start_protection).setOnClickListener { startProtection() }
         autoSwitch.setOnCheckedChangeListener { _, on ->
             if (on == isProtected()) return@setOnCheckedChangeListener
@@ -85,13 +85,28 @@ class MainActivity : Activity() {
         showKeyStatus()
     }
 
-    private fun saveKeyFromBox() {
+    /** Stores whatever is in the key box. Returns false if it was empty. */
+    private fun storeTypedKey(): Boolean {
         val typed = keyBox.text.toString()
-        if (typed.isNotBlank()) {
-            Checker.saveApiKey(this, typed)
-            keyBox.setText("")
-        }
+        if (typed.isBlank()) return false
+        Checker.saveApiKey(this, typed)
+        keyBox.setText("")
         showKeyStatus()
+        return true
+    }
+
+    /**
+     * Saving a key finishes setup: straight on to the permissions if protection isn't on yet, or
+     * straight to the "Jev is watching" confirmation (which closes the app) if it already is.
+     * Before, it only changed the status line, which on a phone upgraded from an earlier version
+     * (protection already on) looked like nothing happened.
+     */
+    private fun saveKeyTapped() {
+        if (!storeTypedKey()) {
+            keyStatus.setText(R.string.paste_key_first)
+            return
+        }
+        if (isProtected()) protectionGranted() else startProtection()
     }
 
     private fun showKeyStatus() {
@@ -101,7 +116,7 @@ class MainActivity : Activity() {
     }
 
     private fun startProtection() {
-        saveKeyFromBox()
+        storeTypedKey()
         val missing = neededPermissions().filter { checkSelfPermission(it) != PackageManager.PERMISSION_GRANTED }
         if (missing.isEmpty()) protectionGranted() else requestPermissions(missing.toTypedArray(), REQUEST_SMS)
     }

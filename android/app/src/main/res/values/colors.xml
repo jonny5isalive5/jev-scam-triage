@@ -1,23 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Dark theme in the Sentovara colours: the logo's teal on its near-black background. -->
     <color name="brand">#0E7C7B</color>
     <color name="brand_dark">#0B5E5D</color>
-    <color name="brand_soft">#E0F2F1</color>
-    <color name="page">#F3F5F7</color>
-    <color name="card">#FFFFFF</color>
-    <color name="card_line">#E1E5EA</color>
-    <color name="input">#F7F9FB</color>
-    <color name="input_line">#C5CDD5</color>
-    <color name="text">#1B1F24</color>
-    <color name="text_soft">#5B6570</color>
-    <color name="scam">#B3261E</color>
-    <color name="scam_soft">#FBE9E7</color>
-    <color name="careful">#8A5A00</color>
-    <color name="careful_soft">#FFF4DC</color>
-    <color name="ordinary">#1E6B3A</color>
-    <color name="ordinary_soft">#E4F2E8</color>
-    <!-- Sentovara header: the logo's teal on dark navy. -->
+    <color name="brand_soft">#123A39</color>
+    <color name="brand_disabled">#1F4948</color>
+    <color name="page">#0B0C10</color>
+    <color name="card">#15181F</color>
+    <color name="card_line">#262B34</color>
+    <color name="input">#0F1116</color>
+    <color name="input_line">#343B46</color>
+    <color name="hint">#7D8792</color>
+    <color name="text">#ECEFF2</color>
+    <color name="text_soft">#A4AEB8</color>
+    <color name="scam">#FF8A80</color>
+    <color name="scam_soft">#3B1716</color>
+    <color name="careful">#FFCC66</color>
+    <color name="careful_soft">#3A2D0C</color>
+    <color name="ordinary">#80D8A0</color>
+    <color name="ordinary_soft">#12301D</color>
     <color name="navy">#0B0C10</color>
+    <color name="header">#11141A</color>
     <color name="logo_bg">#0B0C10</color>
     <color name="teal_light">#5FD4C8</color>
     <color name="header_text_soft">#AAB4BE</color>

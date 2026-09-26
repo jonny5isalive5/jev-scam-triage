@@ -17,6 +17,7 @@
     <string name="api_key_hint">Paste your TypeSafe API key</string>
     <string name="api_key_hint_saved">Key saved ✓ (paste a new one to replace it)</string>
     <string name="save_key">Save key</string>
+    <string name="paste_key_first">Paste your key in the box first.</string>
     <string name="step2">2. Turn on protection</string>
     <string name="auto_check_help">Texts with links, contact details, requests or money words are checked in the background. If one looks risky you get a warning. Nothing is deleted or blocked.</string>
     <string name="start_protection">Start protection</string>

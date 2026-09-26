@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_enabled="false">
-        <shape android:shape="rectangle"><solid android:color="#9CC9C7" /><corners android:radius="14dp" /></shape>
+        <shape android:shape="rectangle"><solid android:color="@color/brand_disabled" /><corners android:radius="14dp" /></shape>
     </item>
     <item android:state_pressed="true">
         <shape android:shape="rectangle"><solid android:color="@color/brand_dark" /><corners android:radius="14dp" /></shape>
