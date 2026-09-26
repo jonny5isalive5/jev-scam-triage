@@ -19,7 +19,9 @@ a delivery company's own app or website, not this message.
 
 **Status:** working end to end. The single pre-registered live evaluation
 run ([PREREGISTRATION.md](PREREGISTRATION.md)) was made on 2026-09-26; its
-results are in the Evaluation card below.
+results are in the Evaluation card below. In short: the checker catches far more modern scams
+than a classifier trained on older texts, but on those scams Jev does only a little better than
+simple keyword rules answering the same questions -- see "How much does Jev add?".
 
 ## Use it
 
@@ -120,6 +122,29 @@ What these can't tell you:
 Per-message verdicts: `results/card_test_live_messages.jsonl`. The validation
 split can be re-run freely with `python -m scam_triage.card --sample 500`
 (mock mode without `TYPESAFE_API_KEY`). The test split is for the one recorded run.
+
+## How much does Jev add? (post-hoc)
+
+Added after the live results were seen, so it isn't part of the pre-registration, but it's the
+first thing worth asking. The checker has an offline mode where a few keyword rules answer the
+six questions instead of Jev. On the **same test messages** as the live run
+(`python -m scam_triage.standin`, no Jev calls):
+
+| Same messages | Jev | Keyword stand-in | Jev minus stand-in (95% CI) |
+| --- | --- | --- | --- |
+| Scams (IMC 2025) warned about | 83.2% | 79.0% | +4.2 points (+0.0 to +8.4) |
+| Ordinary texts (2011) warned about | 9.0% | 7.0% | +2.0 points (-1.4 to +5.4) |
+| Old spam (2011) warned about | 84.9% | 63.0% | +21.8 points (+12.6 to +31.1) |
+
+- **On modern scams, Jev and the keyword rules are close**: no clear difference in what they
+  catch, and Jev warns about ordinary texts slightly more often (within chance). Most of the
+  83%-vs-54% win over TF-IDF comes from the checker's structure -- a few atomic questions
+  combined by a fixed rule -- not from Jev specifically.
+- **On a style the keyword rules weren't written for** (2011 marketing spam), Jev catches clearly
+  more. That fits what Jev should be good at -- judging wording it hasn't seen -- but it's one
+  small group (119 messages), found after the fact.
+- The keyword rules were written by the same person who wrote the questions, after reading some
+  IMC messages, so they may suit this dataset better than they would suit new scams.
 
 ## Data
 

@@ -1,0 +1,32 @@
+{
+ "scams": {
+  "n": 500,
+  "jev_warned": 0.832,
+  "standin_warned": 0.79,
+  "jev_likely_scam": 0.556,
+  "standin_likely_scam": 0.518,
+  "warned_diff_jev_minus_standin": 0.042,
+  "ci_low": 0.0,
+  "ci_high": 0.084
+ },
+ "ordinary": {
+  "n": 500,
+  "jev_warned": 0.09,
+  "standin_warned": 0.07,
+  "jev_likely_scam": 0.01,
+  "standin_likely_scam": 0.012,
+  "warned_diff_jev_minus_standin": 0.02,
+  "ci_low": -0.014,
+  "ci_high": 0.054
+ },
+ "old_spam": {
+  "n": 119,
+  "jev_warned": 0.8487394957983193,
+  "standin_warned": 0.6302521008403361,
+  "jev_likely_scam": 0.4957983193277311,
+  "standin_likely_scam": 0.4369747899159664,
+  "warned_diff_jev_minus_standin": 0.2184873949579832,
+  "ci_low": 0.12605042016806722,
+  "ci_high": 0.31092436974789917
+ }
+}
