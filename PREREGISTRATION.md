@@ -128,3 +128,9 @@ less old 2011 spam (84.9%) than TF-IDF trained on 2011 SMS (93.3%).
   unchanged.
 - 2026-09-26: the live test run was made (results above). No change to the
   questions, the rule, the sample or the thresholds.
+- 2026-09-26: post-hoc, after the live results were seen: compared Jev with the keyword
+  stand-in (mock mode) on the same test messages (`python -m scam_triage.standin`,
+  `results/standin_comparison.json`). Scams warned about: Jev 83.2%, stand-in 79.0%
+  (+4.2 points, 95% CI +0.0 to +8.4). Ordinary: 9.0% vs 7.0% (+2.0, CI -1.4 to +5.4). Old spam:
+  84.9% vs 63.0% (+21.8, CI +12.6 to +31.1). Not pre-registered; reported because it answers the
+  obvious question of what Jev itself adds. No Jev calls and no ledger entry.
