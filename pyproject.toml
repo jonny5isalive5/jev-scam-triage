@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "jev-scam-triage"
 version = "0.1.0"
-description = "Scam and phishing message triage with TypeSafe's Jev, evaluated against fixed baselines on real labelled data."
+description = "A scam checker for text messages and emails: code checks plus atomic Jev questions, with plain-English reasons."
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
@@ -13,6 +13,7 @@ authors = [{ name = "Sentovara" }]
 dependencies = ["scikit-learn>=1.3", "numpy>=1.24"]
 
 [project.optional-dependencies]
+live = ["typesafe-sdk>=0.7.1"]
 dev = ["pytest>=7"]
 
 [tool.setuptools]

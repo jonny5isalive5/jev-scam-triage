@@ -1,64 +1,92 @@
 # Pre-registration
 
-Written before any Jev code exists. Changing anything here after Jev
-results have been seen must be recorded in the change log at the bottom,
-with the reason.
+Written before any live Jev result exists. Anything changed here after live
+results have been seen goes in the change log at the bottom, with the reason.
 
-## Question
+## What is being tested
 
-Does asking Jev a small set of atomic questions about a message, and
-combining the answers in code, flag scam messages better than
-(a) a fixed keyword-rule baseline and (b) a TF-IDF + logistic-regression
-classifier, at the same false-alarm rate?
+A scam checker (`scam_triage.engine.check`) that combines exact code checks
+(look-alike domains, shortened links, look-alike letters, unknown sender)
+with six atomic Jev questions about the masked message, using a rule fixed
+in `engine.py`. It returns *likely scam*, *be careful*, or *looks ordinary*,
+with reasons.
 
-## Fixed protocol
+The question is not "does Jev beat every alternative" -- the public data
+can't support a fair answer to that (see Limits). It is: **what does the
+checker catch, how often does it warn about ordinary messages, and how does
+that compare with classifiers built from the data that is freely
+available?**
 
-- **Data splits** are frozen in `splits/` (60/20/20 dev/val/test,
-  stratified, after collapsing near-duplicate messages). They are never
-  regenerated.
-- **Operating point:** every system flags a message when its score is at
-  or above a threshold chosen on the validation split as the lowest
-  threshold with false-positive rate <= 1% (`metrics.MAX_FPR`). Missing a
-  scam is bad; telling someone their real bank or delivery text is a scam
-  is what makes them stop trusting the tool.
-- **What each split may be used for:**
-  - dev: anything -- reading messages, writing and rewording Jev
-    questions, training the TF-IDF baseline.
-  - val: choosing thresholds, comparing variants during development.
-  - test: one final run per system, recorded in `results/test_ledger.jsonl`.
-- **Primary metric:** recall on test at the val-chosen threshold.
-  **Secondary:** F1 and false-positive rate on test.
-- **A win** means the paired-bootstrap 95% interval for
-  (Jev recall - baseline recall) on test is entirely above 0, with test
-  FPR no worse than the baseline's. Anything else is reported as a tie or
-  a loss, in the README, in the same place a win would have been.
+## Data and splits
 
-## Jev design constraints
+Frozen in `splits/` after collapsing near-duplicates:
 
-- Atomic questions only, each answerable on its own from the message
-  text (for example: does it ask for payment or credentials; does it
-  create time pressure or threats; does the claimed sender fit what is
-  being asked). No single "is this a scam?" question.
-- Answers are combined in code into one score, so the threshold rule
-  above applies to Jev exactly as it does to the baselines.
-- Exact checks that code can do (for example, extracting links) stay in
-  code and are not asked of Jev.
+| Group | Source | Test split |
+| --- | --- | --- |
+| scams | IMC 2025 smishing reports, English (CC BY 4.0) | 2,969 |
+| ordinary | SMS Spam Collection "ham", 2011 | 900 |
+| old spam | SMS Spam Collection "spam", 2011 | 119 |
 
-## Hypotheses
+- dev: anything -- reading messages, rewording Jev questions.
+- val: checking changes during development.
+- test: one live run, recorded in `results/test_ledger.jsonl`.
 
-- **H1, in-domain (SMS Spam Collection).** Expected result: Jev does
-  *not* beat TF-IDF. The dataset is 2011 UK SMS, mostly marketing spam,
-  and TF-IDF already reaches 0.93 recall at 1% FPR on val. This run
-  validates the pipeline; it is not the headline claim.
-- **H2, out-of-domain (to be chosen).** Baselines trained on the SMS
-  dev split, evaluated with no retraining on a modern scam/phishing
-  set; Jev evaluated zero-shot on the same set. This is the real
-  question: whether Jev holds up on scams that don't look like the
-  training data. The H2 dataset must be fixed and added to
-  `data.DATASETS` before any Jev result on it is seen, and it must
-  include hard legitimate messages (real bank, delivery and
-  one-time-code texts), not just casual chat.
+## The one live test run
+
+```
+python -m scam_triage.card --split test --final --sample 500
+```
+
+A fixed sample of up to 500 messages per group (chosen by hashing message
+ids, not by looking at them), with `TYPESAFE_API_KEY` set. The engine,
+questions and combination rule are those at the commit recorded in the
+ledger.
+
+## Measures and what would count as success
+
+1. **Catching scams.** "Caught" = *likely scam* or *be careful* on the
+   scams group. Compared with the TF-IDF classifier trained on 2011 SMS,
+   at its 1%-false-alarm threshold, by paired bootstrap on the same
+   messages. *Success:* the checker catches more, with the 95% interval of
+   the difference above zero.
+2. **Not crying wolf.** On the ordinary group: *likely scam* on at most 2%
+   and any warning on at most 10%. *Success:* both met.
+3. **Tactics.** Cohen's kappa between Jev's answers and the dataset's GPT-4o
+   labels (urgency, greed) and match rate for claimed organisation vs scam
+   type. Reported, with no pass mark -- it is agreement with GPT-4o, not
+   accuracy.
+4. **The gate.** Share of each group forwarded to Jev. Reported.
+
+Whatever the outcome, the README reports all four in the same place, with
+failures stated as plainly as successes.
+
+## Expected results, stated in advance
+
+- A TF-IDF model trained on the IMC dev split as well (`tfidf_in_domain`)
+  flags about 95% of validation scams at about 1% false alarms. The
+  checker is **not expected to beat it**, and the README will not claim
+  to. That model is very likely learning the difference between modern
+  anonymised reports and 2011 chat, not only what makes a scam -- but
+  that can't be shown with this data, so both numbers are reported.
+- Mock-mode numbers (keyword rules standing in for Jev) are reported only
+  as a floor and are labelled as such.
+
+## Limits this data cannot get around
+
+- No modern legitimate messages: bank alerts, delivery updates and
+  one-time codes are private and absent from public datasets. The false
+  alarm measure covers 2011 casual chat only.
+- About 15-22% of IMC "scams" in a hand-checked sample looked like genuine
+  messages users misreported, so no system can reach 100% on that group.
+- IMC links are anonymised, so the look-alike-domain check -- the
+  strongest code check -- never fires on that group.
 
 ## Change log
 
-- 2026-09-26: initial version, before any Jev code.
+- 2026-09-26: initial version (detection benchmark against SMS Spam
+  Collection baselines).
+- 2026-09-26: replaced before any Jev code or live run. The project became
+  a scam checker with an evaluation card, because public data can't
+  support a fair detection benchmark (no modern legitimate messages; IMC
+  tactic labels come from GPT-4o). Validation-split numbers in mock mode
+  had been seen at this point; no live Jev result had.

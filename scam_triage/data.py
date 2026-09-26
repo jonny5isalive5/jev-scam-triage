@@ -12,7 +12,9 @@ different phone numbers; a plain random split puts copies of the same
 message in both training and test, which inflates every score.
 """
 
+import csv
 import hashlib
+import io
 import json
 import random
 import re
@@ -35,7 +37,8 @@ class DatasetSpec:
     sha256: str
     citation: str
     license_note: str
-    positive_label: str  # the raw label string that maps to 1
+    positive_label: str  # the raw label string that maps to 1 ("*" = every message is a scam)
+    fmt: str = "tsv"
 
 
 DATASETS = {
@@ -52,11 +55,44 @@ DATASETS = {
         license_note="Listed by UCI under CC BY 4.0 -- verify before redistributing.",
         positive_label="spam",
     ),
+    "imc25_en": DatasetSpec(
+        name="imc25_en",
+        # English messages only. Every message is a user-reported smishing text; scam_type and
+        # lure_principles were assigned by GPT-4o (validated by the authors on 384 hand-labelled
+        # messages), so agreement with them is agreement with GPT-4o, not ground truth. Roughly
+        # 15-22% of a random sample looked like genuine messages users misreported.
+        url="https://raw.githubusercontent.com/reportsmishing/Smishing-Dataset-IMC25/main/dataset/final_dataset_output.csv",
+        sha256="1bbd1e9e82c3ea023112207b80da268a5c4a07d2353c2b0898360ab037fa9a64",
+        citation=(
+            "Agarwal, S. et al. Fishing for Smishing: Understanding SMS Phishing Infrastructure and "
+            "Strategies by Mining Public User Reports. ACM IMC 2025. doi:10.1145/3730567.3764431"
+        ),
+        license_note="CC BY 4.0 (repository licence).",
+        positive_label="*",
+        fmt="imc_csv",
+    ),
 }
+
+# IMC 2025 anonymised personal details with placeholders. The ones this project's own masking also
+# produces (<URL>, <PHONE_NUMBER>, <EMAIL_ADDRESS>) are kept, so both datasets look alike after
+# masking. The rest never appear in ordinary messages, so a model could learn "has <NAMED_ENTITY>"
+# as a scam tell; they are replaced with fixed neutral fillers instead.
+_KEPT_PLACEHOLDERS = {"<URL>", "<PHONE_NUMBER>", "<EMAIL_ADDRESS>"}
+_FILLERS = {"<NAMED_ENTITY>": "Alex", "<DATE_TIME>": "today", "<LOCATION>": "London", "<NRP>": "British"}
+_PLACEHOLDER_RE = re.compile(r"<[A-Z_]+>")
+
+
+def fill_placeholders(text: str) -> str:
+    def repl(m):
+        token = m.group(0)
+        if token in _KEPT_PLACEHOLDERS:
+            return token
+        return _FILLERS.get(token, "<NUMBER>")
+    return _PLACEHOLDER_RE.sub(repl, text)
 
 
 def dataset_path(name: str) -> Path:
-    return DATA_DIR / f"{name}.tsv"
+    return DATA_DIR / (f"{name}.tsv" if DATASETS[name].fmt == "tsv" else f"{name}.csv")
 
 
 def download(name: str) -> Path:
@@ -77,11 +113,23 @@ def download(name: str) -> Path:
 
 
 def load_raw(name: str) -> list[tuple[str, int]]:
+    return [(text, label) for text, label, _ in load_raw_with_meta(name)]
+
+
+def load_raw_with_meta(name: str) -> list[tuple[str, int, dict]]:
+    """(text, label, metadata). Metadata carries dataset-specific labels such as IMC scam types."""
     spec = DATASETS[name]
+    raw = download(name).read_text(encoding="utf-8", errors="replace")
+    if spec.fmt == "tsv":
+        return [(text, int(label == spec.positive_label), {})
+                for label, text in (line.split("\t", 1) for line in raw.splitlines())]
+    csv.field_size_limit(10**9)
     rows = []
-    for line in download(name).read_text(encoding="utf-8").splitlines():
-        label, text = line.split("\t", 1)
-        rows.append((text, int(label == spec.positive_label)))
+    for rec in csv.DictReader(io.StringIO(raw)):
+        if rec["language"] != "English" or not rec["text"].strip():
+            continue
+        lures = [p.strip() for p in rec["lure_principles"].split(",") if p.strip()]
+        rows.append((fill_placeholders(rec["text"]), 1, {"scam_type": rec["scam_type"], "lures": lures}))
     return rows
 
 
@@ -152,11 +200,18 @@ def write_manifest(name: str) -> Path:
 
 def load_split(name: str, split: str) -> list[tuple[str, int]]:
     """Messages for one split, as recorded in the committed manifest."""
+    return [(t, y) for t, y, _ in load_split_with_meta(name, split)]
+
+
+def load_split_with_meta(name: str, split: str) -> list[tuple[str, int, dict]]:
     manifest = json.loads(manifest_path(name).read_text())
     if manifest["sha256"] != DATASETS[name].sha256:
         raise ValueError("Split manifest was built from a different dataset file.")
     wanted = set(manifest["splits"][split])
-    rows = [(t, y) for t, y in dedupe(load_raw(name)) if message_id(t) in wanted]
+    meta = {}
+    for t, _, m in load_raw_with_meta(name):
+        meta.setdefault(normalize_key(t), m)
+    rows = [(t, y, meta[normalize_key(t)]) for t, y in dedupe(load_raw(name)) if message_id(t) in wanted]
     if len(rows) != len(wanted):
         raise ValueError(f"Manifest lists {len(wanted)} {split} messages but {len(rows)} were found.")
     return rows
