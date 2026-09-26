@@ -24,7 +24,8 @@ than a classifier trained on older texts, but on those scams Jev does only a lit
 simple keyword rules answering the same questions -- see "How much does Jev add?".
 
 **Android app: [download the latest version](https://github.com/jonny5isalive5/jev-scam-triage/releases/latest)**
-(open it on your phone, install, paste your TypeSafe key, tap Save key).
+(open it on your phone, install, paste your TypeSafe key, tap Save key). On Android 13+, if it says
+"Restricted setting": Settings → Apps → Scam Check → ⋮ → Allow restricted settings, then Save key again.
 
 ## Use it
 

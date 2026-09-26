@@ -6,10 +6,12 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
@@ -128,7 +130,26 @@ class MainActivity : Activity() {
         else {
             render()
             keyStatus.setText(R.string.permission_needed)
+            explainBlockedPermission()
         }
+    }
+
+    /**
+     * On Android 13+, an app installed from a download (not the Play Store) can't get SMS permission
+     * until the user taps "Allow restricted settings" on its App info page. Android just shows a
+     * "Restricted setting" notice, so say what to do and open the right page.
+     */
+    private fun explainBlockedPermission() {
+        AlertDialog.Builder(this)
+            .setTitle(R.string.restricted_title)
+            .setMessage(R.string.restricted_body)
+            .setPositiveButton(R.string.restricted_open) { _, _ ->
+                startActivity(
+                    Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.fromParts("package", packageName, null))
+                )
+            }
+            .setNegativeButton(R.string.restricted_later, null)
+            .show()
     }
 
     /**

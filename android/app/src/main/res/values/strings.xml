@@ -22,7 +22,11 @@
     <string name="auto_check_help">Texts with links, contact details, requests or money words are checked in the background. If one looks risky you get a warning. Nothing is deleted or blocked.</string>
     <string name="start_protection">Start protection</string>
     <string name="auto_check">Check incoming texts</string>
-    <string name="permission_needed">Scam Check needs permission to read incoming texts to protect you. Tap Start protection to try again.</string>
+    <string name="permission_needed">Scam Check needs permission to read incoming texts to protect you. Tap Save key or Start protection to try again.</string>
+    <string name="restricted_title">One more step</string>
+    <string name="restricted_body">Android blocks text-message access for apps installed from a download until you allow it.\n\n1. Tap Open App info below.\n2. Tap ⋮ (top right), then Allow restricted settings.\n3. Come back and tap Save key again.\n\nIf there\'s no ⋮ menu, your phone doesn\'t need this step. Just tap Save key again and allow the permissions.</string>
+    <string name="restricted_open">Open App info</string>
+    <string name="restricted_later">Not now</string>
 
     <string name="done_title">You\'re protected</string>
     <string name="done_body">Jev will keep an eye on your texts from now on and warn you if one looks like a scam.\n\nScam Check will close now. It keeps working in the background.</string>

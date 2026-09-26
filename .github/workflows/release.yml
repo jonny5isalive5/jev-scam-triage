@@ -35,6 +35,10 @@ jobs:
             3. Open Scam Check, paste your TypeSafe API key, tap **Save key** and allow the permissions.
                Jev confirms it's watching and the app closes. It keeps working in the background.
 
+            **If Android says "Restricted setting"** (Android 13 and newer, for apps not from the Play Store):
+            open **Settings → Apps → Scam Check**, tap **⋮** (top right) → **Allow restricted settings**,
+            then open Scam Check and tap **Save key** again. The app shows these steps too.
+
             Without a key it still runs the on-phone checks (fake brand links, link shorteners,
             look-alike letters), just not Jev.
 
