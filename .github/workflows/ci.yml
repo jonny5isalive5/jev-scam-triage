@@ -24,7 +24,9 @@ jobs:
         with:
           distribution: temurin
           java-version: "17"
-      - uses: android-actions/setup-android@v3
+      # GitHub's Ubuntu runners ship the Android SDK (ANDROID_HOME) with licences accepted, and the
+      # Android Gradle plugin downloads any missing platform itself. android-actions/setup-android@v3
+      # failed here because its default package list asks for "tools", which no longer exists.
       - name: Unit tests (golden cases shared with Python), lint, and debug build
         working-directory: android
         run: ./gradlew --no-daemon :app:testDebugUnitTest :app:lintDebug :app:assembleDebug
